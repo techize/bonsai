@@ -17,12 +17,15 @@ ssh -t ubuntu@k3s-master -- "/bin/bash -c 'curl -sfL https://get.k3s.io | INSTAL
 # Get the IP of the master node
 K3S_NODEIP_MASTER="https://$(host k3s-master | cut -d ' ' -f 4 ):6443"
 # Get the TOKEN from the master node
-K3S_TOKEN="$(ssh -t ubuntu@k3s-master -- '/bin/bash -c \"sudo cat /var/lib/rancher/k3s/server/node-token\"')"
+K3S_TOKEN=$(ssh -t ubuntu@k3s-master -- '/bin/bash -c "sudo cat /var/lib/rancher/k3s/server/node-token" ')
+
+
+
 # Deploy k3s on the worker nodes
 
 WORKERS="k3s-worker1 k3s-worker2 k3s-worker3"
 for WORKER in ${WORKERS}; 
-do echo -e "[${LB}Info${NC}] deploy k3s on ${WORKER}" && ssh -t -l ubuntu ${WORKER} -- "/bin/bash -c 'curl -sfL https://get.k3s.io | K3S_TOKEN=${K3S_TOKEN} K3S_URL=${K3S_NODEIP_MASTER} INSTALL_K3S_VERSION=${K3S_VERSION} sh -'"; 
+do echo -e "[${LB}Info${NC}] deploy k3s on ${WORKER}" && ssh -t -l ubuntu ${WORKER} -- "/bin/bash -c 'curl -sfL https://get.k3s.io | K3S_TOKEN=${K3S_TOKEN} K3S_URL=${K3S_NODEIP_MASTER} INSTALL_K3S_VERSION=${K3S_VERSION} sh - '"; 
 done
 sleep 10
 
@@ -52,3 +55,14 @@ echo "if you face problems, please open an issue on github"
 echo "############################################################################"
 echo -e "[${GREEN}Success k3s deployment rolled out${NC}]"
 echo "############################################################################"
+
+
+
+
+
+
+
+
+
+ssh -t -l ubuntu k3s-worker3 -- "/bin/bash -c 'curl -sfL https://get.k3s.io | K3S_TOKEN=cat: -c: line 0: unexpected EOF while looking for matching `"'\''
+ K3S_URL=https://192.168.1.51:6443 INSTALL_K3S_VERSION=v1.23.2+k3s1 sh - '\'''
